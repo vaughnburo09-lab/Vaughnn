@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoseCare Pharmacy · Cashiering</title>
+<style>
+:root{--bg:#fdf0f5;--brand:#d6336c;--brand-d:#a61e4d;--tint:#ffe3ee;--line:#f3d3e0;--ink:#3b1626;--muted:#8a5a6c;--ring:#f7a6c4;--red:#c0392b;--gold:#fff1c2;--gold-ink:#5a4300}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.4;padding-bottom:80px}
+button,input{font:inherit}
+header{background:linear-gradient(135deg,var(--brand),var(--brand-d));color:#fff;padding:14px 16px}
+.hwrap{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.badge{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:1.7rem}
+.badge span{display:inline-block;transform:scaleX(-1)}
+h1{margin:0;font-size:1.35rem;letter-spacing:.3px}
+.sub{margin:0;font-size:.8rem;opacity:.85}
+.meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.85rem}
+.meta label{display:flex;align-items:center;gap:6px}
+.meta input{padding:7px 9px;border-radius:8px;border:0;width:150px;color:var(--ink)}
+.chip{background:rgba(255,255,255,.18);padding:6px 10px;border-radius:999px;font-weight:600}
+.wrap{max-width:1100px;margin:0 auto;padding:14px;display:grid;gap:14px}
+.card-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+h2{margin:0 0 10px;font-size:1rem}
+.tabs{display:flex;gap:8px;margin-bottom:10px}
+.tab{flex:1;padding:10px;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:10px;font-weight:700;cursor:pointer}
+.tab.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#fff}
+input:focus,button:focus-visible{outline:3px solid var(--ring);outline-offset:1px}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.card{position:relative;text-align:left;padding:12px 12px 10px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:84px;transition:transform .08s,box-shadow .15s,border-color .15s}
+.card:hover{border-color:var(--brand);box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.card:active{transform:scale(.97)}
+.card.flash{background:var(--tint);border-color:var(--brand)}
+.nm{font-weight:600;font-size:.88rem;padding-right:22px}
+.pr{color:var(--brand);font-weight:800;margin-top:auto}
+.plus{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:var(--tint);color:var(--brand);display:grid;place-items:center;font-weight:800;line-height:1}
+.none{color:var(--muted);grid-column:1/-1;margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);text-align:left;padding:6px 4px;border-bottom:2px solid var(--line)}
+td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
+.num{text-align:right}
+.psub{display:none;font-size:.75rem;color:var(--muted)}
+.empty td{text-align:center;color:var(--muted);padding:22px 8px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.qty button{width:28px;height:28px;border:0;background:var(--tint);color:var(--brand);font-weight:800;cursor:pointer}
+.qty span{min-width:26px;text-align:center;font-weight:700}
+.rm{border:0;background:none;color:var(--red);font-size:1.2rem;cursor:pointer;padding:2px 6px}
+.scroll{overflow-x:auto;max-height:340px;overflow-y:auto}
+.total{display:flex;justify-content:space-between;align-items:center;background:var(--gold);color:var(--gold-ink);padding:12px 14px;border-radius:12px;margin:12px 0}
+.total strong{font-size:1.9rem}
+.pay label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+.pay input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.quick button{padding:6px 10px;border:1px solid var(--line);background:#fff;border-radius:999px;font-weight:600;cursor:pointer;font-size:.8rem}
+.quick button:hover{background:var(--tint)}
+.change{display:flex;justify-content:space-between;font-size:1.15rem;font-weight:700;margin:6px 0 12px}
+.change.low strong{color:var(--red)}
+.actions{display:grid;gap:8px}
+.btn{padding:12px 14px;border-radius:10px;border:1px solid var(--brand);background:#fff;color:var(--brand);font-weight:700;cursor:pointer}
+.btn:hover{background:var(--tint)}
+.btn.primary{background:var(--brand);color:#fff;font-size:1.02rem}
+.btn.primary:hover{background:var(--brand-d)}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.msg{margin:8px 0 0;color:var(--red);font-weight:600;font-size:.85rem;min-height:1.1em}
+.saved{margin:8px 0 0;color:var(--brand);font-weight:600;font-size:.85rem}
+details{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+summary{cursor:pointer;font-weight:700;color:var(--brand);font-size:.88rem}
+.custom{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:10px}
+.custom label{font-size:.75rem;font-weight:700;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.custom input{padding:9px;border:1px solid var(--line);border-radius:8px;width:100%}
+.custom .btn{grid-column:1/-1}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--brand-d);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));text-decoration:none;font-weight:700;z-index:5}
+.bar b{background:#fff;color:var(--brand-d);border-radius:999px;padding:2px 9px;margin-right:8px}
+.toast{position:fixed;left:50%;bottom:78px;transform:translate(-50%,20px);background:#222;color:#fff;padding:8px 14px;border-radius:999px;font-size:.85rem;opacity:0;pointer-events:none;transition:.2s;z-index:6;max-width:90vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(min-width:900px){
+  body{padding-bottom:20px}
+  .wrap{grid-template-columns:1.5fr 1fr;align-items:start}
+  #order{position:sticky;top:14px}
+  .bar{display:none}
+  .toast{bottom:24px}
+}
+@media(max-width:560px){.pcol{display:none}.psub{display:block}.meta input{width:120px}}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;z-index:10}
+.overlay[hidden]{display:none}
+.paper{background:#fff;color:#111;width:100%;max-width:340px;padding:18px;border-radius:10px;font-family:"Courier New",monospace;font-size:.85rem}
+.paper h3{margin:0;text-align:center;font-size:1.1rem}
+.paper .c{text-align:center;margin:2px 0}
+.paper hr{border:0;border-top:1px dashed #555;margin:8px 0}
+.paper .r{display:flex;justify-content:space-between;gap:8px}
+.paper .big{font-weight:700;font-size:1rem}
+.rbtns{display:flex;gap:8px;margin-top:14px}
+.rbtns .btn{flex:1}
+@media print{
+  body{background:#fff;padding:0}
+  header,.wrap,.bar,.toast,.rbtns{display:none!important}
+  .overlay{position:static;background:none;padding:0;display:block}
+  .paper{max-width:none;padding:0}
+}
+.tabs{overflow-x:auto;padding-bottom:4px}
+.tab{flex:0 0 auto;white-space:nowrap;padding:8px 14px}
+.pic{height:60px;display:grid;place-items:center;background:var(--tint);border-radius:8px;overflow:hidden}
+.pic svg{width:50px;height:50px}
+.pic img,.thumb img{width:100%;height:100%;object-fit:cover}
+.plus{background:var(--brand);color:#fff}
+.gen{font-size:.72rem;color:var(--muted);line-height:1.25}
+.pcell{display:flex;gap:8px;align-items:center}
+.thumb{width:34px;height:34px;flex:none;background:var(--tint);border-radius:8px;display:grid;place-items:center;overflow:hidden}
+.thumb svg{width:26px;height:26px}
+.disc{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:600;margin:10px 0 0;color:var(--ink)}
+.pay .disc input{width:auto}
+.sums{margin-top:8px;font-size:.85rem;color:var(--muted)}
+.sums div{display:flex;justify-content:space-between}
+.note{font-size:.72rem;color:var(--muted);margin:12px 0 0}
+.psub{display:block}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="logo">
+      <div class="badge"><svg viewBox="0 0 24 24" width="30" height="30"><rect x="9" y="3" width="6" height="18" rx="2" fill="#fff"/><rect x="3" y="9" width="18" height="6" rx="2" fill="#fff"/></svg></div>
+      <div><h1 id="storeName">RoseCare Pharmacy</h1><p class="sub">Your neighborhood botika · Open daily 8AM–10PM</p></div>
+    </div>
+    <div class="meta">
+      <span class="chip" id="txnId">TXN-001</span>
+      <span class="chip" id="txnDate"></span>
+      <span class="chip">Walk-in sale</span>
+      <label>Cashier <input type="text" id="cashier" value="Maria Santos"></label>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="card-box" id="menuBox">
+    <h2>Medicines &amp; health products</h2>
+    <div class="tabs" id="tabs"></div>
+    <input class="search" type="search" id="search" placeholder="Search medicine or brand...">
+    <div class="menu" id="menu"></div>
+  </section>
+
+  <aside class="card-box pay" id="order">
+    <h2>Current order</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Product</th><th class="num">Qty</th><th class="num pcol">Price</th><th class="num">Subtotal</th><th></th></tr></thead>
+        <tbody id="items"></tbody>
+      </table>
+    </div>
+
+    <label class="disc"><input type="checkbox" id="disc"> Senior Citizen / PWD (20% discount)</label>
+    <div class="sums"><div><span>Subtotal</span><span id="sub">₱0.00</span></div><div><span>Discount</span><span id="dsc">−₱0.00</span></div></div>
+    <div class="total"><span>Total amount</span><strong id="total">₱0.00</strong></div>
+
+    <label for="cash">Cash received (₱)</label>
+    <input type="number" id="cash" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+    <div class="quick" id="quick"></div>
+    <div class="change" id="changeBox"><span id="changeLbl">Change</span><strong id="change">₱0.00</strong></div>
+
+    <div class="actions">
+      <button id="completeBtn" class="btn primary">Complete Transaction</button>
+      <div class="row2">
+        <button id="exportBtn" class="btn">Export to CSV</button>
+        <button id="clearBtn" class="btn danger">Clear Transaction</button>
+      </div>
+    </div>
+    <p id="msg" class="msg" role="alert"></p>
+    <p id="saved" class="saved"></p>
+
+    <details>
+      <summary>Add a custom item</summary>
+      <div class="custom">
+        <label>Product name <input type="text" id="product" placeholder="e.g. Item name"></label>
+        <label>Quantity <input type="number" id="qty" min="1" step="1" value="1"></label>
+        <label>Unit price (₱) <input type="number" id="price" min="0" step="0.01" placeholder="0.00"></label>
+        <button id="addBtn" class="btn">Add Item</button>
+      </div>
+    </details>
+    <p class="note">Sample prices for a school activity. Always read the label and consult your doctor or pharmacist.</p>
+  </aside>
+</div>
+
+<a class="bar" href="#order"><span><b id="barCount">0</b>View order</span><span id="barTotal">₱0.00</span></a>
+<div class="toast" id="toast"></div>
+
+<div id="receipt" class="overlay" hidden>
+  <div class="paper">
+    <div id="receiptBody"></div>
+    <div class="rbtns">
+      <button id="printBtn" class="btn primary">Print Receipt</button>
+      <button id="closeRcpt" class="btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let items = [], records = [], txnCounter = 1, cat = "", toastT;
+const $ = id => document.getElementById(id);
+const peso = n => "₱" + n.toFixed(2);
+const txnId = () => "TXN-" + String(txnCounter).padStart(3, "0");
+const today = () => new Date().toISOString().slice(0, 10);
+const subtotal = () => items.reduce((s, i) => s + i.qty * i.price, 0);
+const discount = () => $("disc").checked ? Math.round(subtotal() * 20) / 100 : 0;
+const total = () => subtotal() - discount();
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function showMsg(t) { $("msg").textContent = t; }
+function toast(t) {
+  const el = $("toast"); el.textContent = t; el.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 1200);
+}
+
+// ---- Products ----
+const PHOTOS = {};  // optional real photos, e.g. "Biogesic": "images/biogesic.jpg"
+const ART = {
+  tab: '<rect x="6" y="12" width="36" height="24" rx="4" fill="#fff" stroke="@" stroke-width="2"/><g fill="@"><circle cx="15" cy="20" r="3.5"/><circle cx="24" cy="20" r="3.5"/><circle cx="33" cy="20" r="3.5"/><circle cx="15" cy="29" r="3.5"/><circle cx="24" cy="29" r="3.5"/><circle cx="33" cy="29" r="3.5"/></g>',
+  bottle: '<rect x="14" y="6" width="20" height="8" rx="2" fill="@"/><rect x="11" y="13" width="26" height="30" rx="5" fill="#fff" stroke="@" stroke-width="2"/><rect x="15" y="21" width="18" height="12" rx="2" fill="@" opacity=".25"/><path d="M24 23v8M20 27h8" stroke="@" stroke-width="2.5" stroke-linecap="round"/>',
+  syrup: '<rect x="19" y="4" width="10" height="7" rx="2" fill="@"/><path d="M19 11h10v6l6 6v18a4 4 0 0 1-4 4H17a4 4 0 0 1-4-4V23l6-6z" fill="#fff" stroke="@" stroke-width="2"/><rect x="16" y="27" width="16" height="11" rx="2" fill="@" opacity=".25"/>',
+  tube: '<path d="M12 8h24l-3 8H15z" fill="@"/><rect x="15" y="16" width="18" height="26" rx="2" fill="#fff" stroke="@" stroke-width="2"/><path d="M15 42h18l-2 3H17z" fill="@"/><rect x="18" y="22" width="12" height="8" rx="1" fill="@" opacity=".25"/>',
+  box: '<rect x="7" y="12" width="34" height="26" rx="3" fill="#fff" stroke="@" stroke-width="2"/><rect x="7" y="12" width="34" height="7" fill="@"/><path d="M24 23v10M19 28h10" stroke="@" stroke-width="3" stroke-linecap="round"/>',
+  drops: '<path d="M21 4h6v8h-6z" fill="@"/><rect x="18" y="12" width="12" height="4" fill="@"/><rect x="14" y="16" width="20" height="26" rx="5" fill="#fff" stroke="@" stroke-width="2"/><path d="M24 22c-3 4-4 6-4 8a4 4 0 0 0 8 0c0-2-1-4-4-8z" fill="@" opacity=".4"/>',
+  plaster: '<g transform="rotate(-35 24 24)"><rect x="5" y="16" width="38" height="16" rx="8" fill="@" opacity=".85"/><rect x="17" y="16" width="14" height="16" fill="#fff" opacity=".85"/></g>'
+};
+const art = (type, color, name) => PHOTOS[name] ? '<img alt="" src="' + PHOTOS[name] + '">' :
+  '<svg viewBox="0 0 48 48" aria-hidden="true">' + (ART[type] || ART.box).replace(/@/g, color) + '</svg>';
+const CATS = {
+  "Pain & Fever": ["#d6336c", [
+    ["Biogesic","Paracetamol 500mg · per tablet",5.5,"tab"],["Medicol Advance","Ibuprofen 200mg · per capsule",9,"tab"],["Advil","Ibuprofen 200mg · per tablet",10,"tab"],["Alaxan FR","Ibuprofen + Paracetamol · per capsule",12,"tab"],
+    ["Tempra Syrup","Paracetamol 120mg/5mL · 60mL",95,"syrup"],["Tempra Drops","Paracetamol 100mg/mL · 15mL",120,"drops"],["Salonpas Patch","Pain relief patch · per piece",15,"plaster"],["Efficascent Oil","Massage oil · 25mL",85,"bottle"]]],
+  "Cough & Cold": ["#e8590c", [
+    ["Neozep Forte","Phenylephrine + Chlorphenamine + Paracetamol · per tablet",8.5,"tab"],["Bioflu","Cold and flu · per tablet",10,"tab"],["Decolgen Forte","Cold and flu · per tablet",9,"tab"],["Solmux","Carbocisteine 500mg · per capsule",12,"tab"],
+    ["Tuseran Forte","Cough and cold · per capsule",14,"tab"],["Lagundi 300mg","Herbal cough relief · per tablet",7,"tab"],["Strepsils","Sore throat lozenge · per piece",12,"tab"],["Vicks VapoRub","Topical rub · 10g",65,"tube"]]],
+  "Stomach": ["#2f9e44", [
+    ["Kremil-S","Antacid · per tablet",9,"tab"],["Maalox Plus","Antacid chewable · per tablet",10,"tab"],["Gaviscon Sachet","Heartburn relief · 10mL",35,"syrup"],["Diatabs","Loperamide 2mg · per capsule",8,"tab"],
+    ["Imodium","Loperamide 2mg · per capsule",15,"tab"],["Dulcolax","Bisacodyl 5mg · per tablet",10,"tab"],["Hydrite","Oral rehydration · per tablet",12,"tab"],["Erceflora","Probiotic · per ampule",45,"drops"]]],
+  "Allergy": ["#7048e8", [
+    ["Virlix","Cetirizine 10mg · per tablet",8,"tab"],["Zyrtec","Cetirizine 10mg · per tablet",20,"tab"],["Claritin","Loratadine 10mg · per tablet",14,"tab"],["Allerkid Syrup","Cetirizine · 60mL",160,"syrup"],
+    ["Caladryl Lotion","Calamine · 60mL",110,"bottle"],["Visine Eye Drops","Tetrahydrozoline · 15mL",160,"drops"]]],
+  "Vitamins": ["#f08c00", [
+    ["Enervon","Multivitamins · per tablet",8,"tab"],["Conzace","Multivitamins + Zinc · per capsule",15,"tab"],["Centrum Advance","Multivitamins · per tablet",22,"tab"],["Cecon","Vitamin C 500mg · per capsule",7,"tab"],
+    ["Poten-Cee","Vitamin C 500mg · per tablet",6.5,"tab"],["Fern-C","Vitamin C · per capsule",9,"tab"],["Immunpro","Vitamin C + Zinc · per tablet",12,"tab"],["Ceelin Plus Syrup","Vitamin C + Zinc · 60mL",125,"syrup"]]],
+  "First Aid": ["#1c7ed6", [
+    ["Betadine Solution","Povidone-Iodine 10% · 15mL",70,"bottle"],["Betadine Ointment","Povidone-Iodine · 5g",85,"tube"],["Green Cross Alcohol","Isopropyl 70% · 60mL",45,"bottle"],["Hydrogen Peroxide","3% solution · 60mL",38,"bottle"],
+    ["Band-Aid","Adhesive strip · per piece",3,"plaster"],["Gauze Pad","Sterile 3x3 · per piece",8,"box"],["Micropore Tape","1 inch roll",35,"box"],["Cotton Balls","Pack of 25",25,"box"]]],
+  "Health Needs": ["#0c8599", [
+    ["Surgical Face Mask","3-ply · per piece",5,"box"],["Hand Sanitizer","Ethyl alcohol 70% · 60mL",55,"bottle"],["Digital Thermometer","Fever thermometer",185,"box"],["Vaseline Jelly","Petroleum jelly · 50g",75,"tube"],["Cotton Buds","Pack of 100",45,"box"]]]
+};
+cat = Object.keys(CATS)[0];
+function renderTabs() {
+  const box = $("tabs"); box.innerHTML = "";
+  Object.keys(CATS).forEach(name => {
+    const b = document.createElement("button");
+    b.className = "tab" + (name === cat ? " on" : ""); b.textContent = name;
+    b.onclick = () => { cat = name; $("search").value = ""; renderTabs(); renderMenu(); };
+    box.appendChild(b);
+  });
+}
+function renderMenu() {
+  const q = $("search").value.trim().toLowerCase(), box = $("menu");
+  let list = [];
+  Object.entries(CATS).forEach(([c, [color, prods]]) => {
+    if (q || c === cat) prods.forEach(p => list.push({ p, color }));
+  });
+  if (q) list = list.filter(x => (x.p[0] + " " + x.p[1]).toLowerCase().includes(q));
+  box.innerHTML = "";
+  list.forEach(({ p: [name, detail, price, type], color }) => {
+    const b = document.createElement("button");
+    b.className = "card";
+    b.innerHTML = '<span class="pic">' + art(type, color, name) + '</span><span class="nm"></span><span class="gen"></span><span class="pr">' + peso(price) + '</span><span class="plus">+</span>';
+    b.querySelector(".nm").textContent = name;
+    b.querySelector(".gen").textContent = detail;
+    b.onclick = () => {
+      addToCart(name, 1, price, type, color, detail); toast("Added: " + name);
+      b.classList.add("flash"); setTimeout(() => b.classList.remove("flash"), 250);
+    };
+    box.appendChild(b);
+  });
+  if (!box.children.length) box.innerHTML = '<p class="none">No matching products.</p>';
+}
+$("search").oninput = renderMenu;
+
+// ---- Cart ----
+function addToCart(name, qty, price, type, color, detail) {
+  $("saved").textContent = ""; showMsg("");
+  const same = items.find(i => i.name === name && i.price === price);
+  if (same) same.qty += qty; else items.push({ name, qty, price, type: type || "box", color: color || "#d6336c", detail: detail || "" });
+  render();
+}
+function changeQty(i, d) { items[i].qty += d; if (items[i].qty < 1) items.splice(i, 1); render(); }
+
+function addCustom() {
+  const name = $("product").value.trim();
+  const qty = parseInt($("qty").value, 10);
+  const price = parseFloat($("price").value);
+  if (!name) return showMsg("Enter a product name.");
+  if (!Number.isInteger(qty) || qty < 1) return showMsg("Quantity must be a whole number of 1 or more.");
+  if (isNaN(price) || price < 0) return showMsg("Enter a valid unit price (0 or more).");
+  addToCart(name, qty, price); toast("Added: " + name);
+  $("product").value = ""; $("qty").value = 1; $("price").value = "";
+}
+
+function render() {
+  const body = $("items");
+  if (!items.length) {
+    body.innerHTML = '<tr class="empty"><td colspan="5">Cart is empty. Tap a product to add it.</td></tr>';
+  } else {
+    body.innerHTML = "";
+    items.forEach((it, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = '<td><div class="pcell"><span class="thumb">' + art(it.type, it.color, it.name) + '</span><div><div class="pn"></div><div class="gen det"></div><div class="psub">' + peso(it.price) + ' each</div></div></div></td>' +
+        '<td class="num"><div class="qty"><button aria-label="Less">−</button><span>' + it.qty + '</span><button aria-label="More">+</button></div></td>' +
+        '<td class="num pcol">' + peso(it.price) + '</td><td class="num"><b>' + peso(it.qty * it.price) + '</b></td>' +
+        '<td><button class="rm" aria-label="Remove item">×</button></td>';
+      tr.querySelector(".pn").textContent = it.name;
+      tr.querySelector(".det").textContent = it.detail;
+      const [minus, plus] = tr.querySelectorAll(".qty button");
+      minus.onclick = () => changeQty(i, -1);
+      plus.onclick = () => changeQty(i, 1);
+      tr.querySelector(".rm").onclick = () => { items.splice(i, 1); render(); };
+      body.appendChild(tr);
+    });
+  }
+  $("sub").textContent = peso(subtotal());
+  $("dsc").textContent = "−" + peso(discount());
+  $("total").textContent = peso(total());
+  $("barTotal").textContent = peso(total());
+  $("barCount").textContent = items.reduce((s, i) => s + i.qty, 0);
+  $("txnId").textContent = txnId();
+  updateChange();
+}
+
+function updateChange() {
+  const cash = parseFloat($("cash").value), t = total();
+  const short = !isNaN(cash) && cash < t;
+  $("changeBox").classList.toggle("low", short);
+  $("changeLbl").textContent = short ? "Short by" : "Change";
+  $("change").textContent = peso(isNaN(cash) ? 0 : Math.abs(cash - t));
+}
+const quick = $("quick");
+[["Exact", null], ["₱50", 50], ["₱100", 100], ["₱200", 200], ["₱500", 500], ["₱1000", 1000]].forEach(([l, v]) => {
+  const b = document.createElement("button"); b.textContent = l;
+  b.onclick = () => { $("cash").value = v === null ? total().toFixed(2) : v; updateChange(); };
+  quick.appendChild(b);
+});
+$("cash").oninput = updateChange;
+
+// ---- Complete / clear ----
+function completeTransaction() {
+  if (!items.length) return showMsg("Add at least one item first.");
+  const cash = parseFloat($("cash").value);
+  if (isNaN(cash) || cash < 0) return showMsg("Enter the cash received.");
+  if (cash < total()) return showMsg("Cash received is less than the total amount.");
+  const r = { id: txnId(), date: today(), cashier: $("cashier").value.trim(),
+    items: items.map(i => ({ ...i })), sub: subtotal(), disc: discount(), total: total(), cash, change: cash - total() };
+  records.push(r);
+  showReceipt(r);
+  $("saved").textContent = r.id + " saved. Tap Export to CSV to download.";
+  txnCounter++; items = []; $("disc").checked = false; $("cash").value = ""; showMsg("");
+  render();
+}
+function clearTransaction() { items = []; $("disc").checked = false; $("cash").value = ""; showMsg(""); $("saved").textContent = ""; render(); }
+
+// ---- Receipt ----
+function showReceipt(r) {
+  const lines = r.items.map(i => '<div>' + esc(i.name) + '</div><div class="r"><span>' + i.qty + ' x ' + peso(i.price) + '</span><span>' + peso(i.qty * i.price) + '</span></div>').join("");
+  $("receiptBody").innerHTML =
+    '<h3>' + esc($("storeName").textContent) + '</h3><p class="c">Your neighborhood botika</p><p class="c">OFFICIAL RECEIPT</p><hr>' +
+    '<div class="r"><span>' + r.id + '</span><span>' + r.date + '</span></div><div>Cashier: ' + esc(r.cashier) + '</div><hr>' + lines + '<hr>' +
+    '<div class="r"><span>Subtotal</span><span>' + peso(r.sub) + '</span></div>' +
+    (r.disc ? '<div class="r"><span>SC/PWD 20% disc.</span><span>-' + peso(r.disc) + '</span></div>' : '') +
+    '<div class="r big"><span>TOTAL</span><span>' + peso(r.total) + '</span></div>' +
+    '<div class="r"><span>Cash</span><span>' + peso(r.cash) + '</span></div>' +
+    '<div class="r"><span>Change</span><span>' + peso(r.change) + '</span></div><hr>' +
+    '<p class="c">Read the label. Consult your doctor or pharmacist.</p><p class="c">Thank you! Get well soon.</p>';
+  $("receipt").hidden = false;
+}
+$("printBtn").onclick = () => window.print();
+$("closeRcpt").onclick = () => { $("receipt").hidden = true; };
+
+// ---- CSV export ----
+const csvCell = v => { const s = String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function exportCSV() {
+  if (!records.length) return showMsg("No completed transactions to export. Click Complete Transaction first.");
+  showMsg("");
+  const rows = [["Transaction ID", "Date", "Product", "Quantity", "Unit Price", "Subtotal"]];
+  records.forEach(r => r.items.forEach(i => rows.push([r.id, r.date, i.name + (i.detail ? " - " + i.detail : ""), i.qty, i.price.toFixed(2), (i.qty * i.price).toFixed(2)])));
+  rows.push([]); rows.push(["Transaction Summary"]);
+  rows.push(["Transaction ID", "Date", "Cashier", "Subtotal", "Discount", "Total Amount", "Cash Received", "Change"]);
+  records.forEach(r => rows.push([r.id, r.date, r.cashier, r.sub.toFixed(2), r.disc.toFixed(2), r.total.toFixed(2), r.cash.toFixed(2), r.change.toFixed(2)]));
+  const csv = rows.map(r => r.map(csvCell).join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "transactions_" + today() + ".csv";
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+}
+
+$("addBtn").onclick = addCustom;
+$("completeBtn").onclick = completeTransaction;
+$("clearBtn").onclick = clearTransaction;
+$("exportBtn").onclick = exportCSV;
+$("txnDate").textContent = today();
+$("disc").onchange = render;
+renderTabs(); renderMenu(); render();
+</script>
+</body>
+</html>
